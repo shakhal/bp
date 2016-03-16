@@ -2,7 +2,7 @@ package digest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Event {
+public class BpEvent {
 
     @JsonProperty("event_type")
     private String eventType;

@@ -2,17 +2,22 @@ package digest;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import reactor.bus.Event;
+import reactor.fn.Consumer;
 
-public class EventStatsCounter implements EventHandler{
+@Service
+public class EventStatsCounter implements Consumer<Event<BpEvent>> {
 
     @Autowired
     private EventStats eventStats;
 
     @Override
-    public void handle(Event event){
-        eventStats.getEventsCounter().addAndGet(event.getEventType(), 1);
+    public void accept(Event<BpEvent> bpEventEvent) {
+        eventStats.getEventsCounter().addAndGet(bpEventEvent.getData().getEventType(), 1);
 
-        int wordCount = event.getData().split(" ").length;
+        int wordCount = bpEventEvent.getData().getData().split(" ").length;
         eventStats.getWordCount().addAndGet(wordCount);
+
     }
 }
