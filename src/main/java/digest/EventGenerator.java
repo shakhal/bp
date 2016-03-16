@@ -1,7 +1,5 @@
 package digest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,25 +23,33 @@ public class EventGenerator {
 
             p = Runtime.getRuntime().exec("bin/generator-macosx-amd64");
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
-            ObjectMapper mapper = new ObjectMapper();
 
             String inputStr;
             while ((inputStr = streamReader.readLine()) != null){
 
-                try{
-                    BpEvent event = mapper.readValue(inputStr, BpEvent.class);
+                createEvent(inputStr);
 
-                    eventBus.notify("bpevents", Event.wrap(event));
-
-                }
-                catch (JsonParseException | JsonMappingException jsonParseException){
-                    System.err.println("ERROR PARSING:"+inputStr);
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public BpEvent createEvent(String json){
+        ObjectMapper mapper = new ObjectMapper();
 
+        try{
+            BpEvent event = mapper.readValue(json, BpEvent.class);
+
+            eventBus.notify("bpevents", Event.wrap(event));
+
+            return event;
+
+        }
+        catch (IOException jsonParseException){
+            System.err.println("ERROR PARSING:"+json);
+
+            return null;
+        }
+    }
 }

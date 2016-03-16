@@ -20,17 +20,6 @@ public class Application {
 
     }
 
-    @Bean
-    Environment env() {
-        return Environment.initializeIfEmpty()
-                .assignErrorJournal();
-    }
-
-    @Bean
-    EventBus createEventBus(Environment env) {
-        return EventBus.create(env, Environment.THREAD_POOL);
-    }
-
     @Autowired
     private EventBus eventBus;
 
