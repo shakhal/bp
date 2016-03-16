@@ -1,6 +1,7 @@
 package digest;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class EventGenerator {
                     eventBus.notify("bpevents", Event.wrap(event));
 
                 }
-                catch (JsonParseException jsonParseException){
+                catch (JsonParseException | JsonMappingException jsonParseException){
                     System.err.println("ERROR PARSING:"+inputStr);
                 }
             }
